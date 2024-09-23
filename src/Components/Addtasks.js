@@ -1,40 +1,52 @@
-import React, { useState } from 'react';
+import React, { useReducer } from 'react';
 
-const Addtasks = ({ addTask }) => {
-  const [inputs, setInputs] = useState({
-    taskName: '',
-    description: ''
-  });
+const initialState = {
+  taskName: '',
+  description: ''
+};
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'inputs':
+      return { ...state, [action.name]: action.value };
+    default:
+      return state;
+  }
+};
+
+const AddTasks = ({ addTask }) => {
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   const handleInputs = (e) => {
-    setInputs({
-      ...inputs,
-      [e.target.name]: e.target.value
+    dispatch({
+      type: 'inputs',
+      name: e.target.name,
+      value: e.target.value
     });
   };
 
-  const handlesubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault(); // prevents the page from refreshing when the form is submitted
-    addTask(inputs); // call the addTask function with the inputs
+    addTask(state); // call the addTask function with the state
   };
 
   return (
     <div>
-      <h1 style={{color: 'green'}}>TO Do List</h1>
-      <form onSubmit={handlesubmit}>
+      <h1 style={{ color: 'green' }}>TO Do List</h1>
+      <form onSubmit={handleSubmit}>
         <input
           type="text"
           name="taskName"
           placeholder="Add a task"
           onChange={handleInputs}
-          value={inputs.taskName}
+          value={state.taskName}
         />
         <input
           type="text"
           name="description"
           placeholder="Description"
           onChange={handleInputs}
-          value={inputs.description}
+          value={state.description}
         />
         <button type="submit">Submit</button>
       </form>
@@ -42,4 +54,4 @@ const Addtasks = ({ addTask }) => {
   );
 };
 
-export default Addtasks;
+export default AddTasks;
